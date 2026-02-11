@@ -14,9 +14,6 @@ function App() {
       <Header />
 
 
-      <h1 class="text-3xl font-bold underline">
-        Hello world!
-      </h1>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
