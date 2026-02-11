@@ -3,15 +3,15 @@ import './App.css'
 import Home from './pages/Home'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 function App() {
   return (
     <Router>
-      <nav style={{ padding: '1rem', backgroundColor: '#333', marginBottom: '1rem' }}>
-        <Link to="/" style={{ color: 'white', marginRight: '1rem' }}>Home</Link>
-        <Link to="/about" style={{ color: 'white', marginRight: '1rem' }}>About</Link>
-        <Link to="/contact" style={{ color: 'white' }}>Contact</Link>
-      </nav>
+      <Header />
+
+
 <h1 class="text-3xl font-bold underline">
     Hello world!
   </h1>
@@ -20,6 +20,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
+      <Footer />
+
     </Router>
   )
 }
