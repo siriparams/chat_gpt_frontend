@@ -1,94 +1,146 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-const Dashboard = () => {
-  const [user, setUser] = useState(null);
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    // 1. Check for token on component mount
-    const token = localStorage.getItem('access_token');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-    if (!token) {
-      // If no token, kick them back to login
-      window.location.href = '/login';
-    } else {
-      // 2. Optional: Fetch user data from backend using the token
-      // For now, we'll simulate a logged-in user
-      setUser({ email: localStorage.getItem('user_email') || 'User' });
+    try {
+      const response = await fetch('http://127.0.0.1:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success: Store tokens in local storage
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        localStorage.setItem('token_type', data.token_type);
+
+        console.log('Login successful, tokens stored.');
+        // Redirect user to dashboard or home
+        window.location.href = '/dashboard'; 
+      } else {
+        // Handle backend errors (e.g., 401 Unauthorized)
+        setError(data.detail || 'Invalid email or password');
+      }
+    } catch (err) {
+      setError('Connection failed. Please check if the server is running.');
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
-
-  const handleLogout = () => {
-    // 3. Clear local storage and redirect
-    localStorage.clear();
-    window.location.href = '/login';
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-indigo-900 text-white hidden md:flex flex-col">
-        <div className="p-6 text-2xl font-bold border-b border-indigo-800">
-          MyApp
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="mx-auto h-12 w-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+          <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
-          <a href="#" className="block py-2.5 px-4 rounded bg-indigo-800 transition">Dashboard</a>
-          <a href="#" className="block py-2.5 px-4 rounded hover:bg-indigo-800 transition">Profile</a>
-          <a href="#" className="block py-2.5 px-4 rounded hover:bg-indigo-800 transition">Settings</a>
-        </nav>
-        <button
-          onClick={handleLogout}
-          className="m-4 p-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition"
-        >
-          Logout
-        </button>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Sign in to your account
+        </h2>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Header */}
-        <header className="bg-white shadow-sm py-4 px-8 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">Dashboard Overview</h1>
-          <div className="flex items-center space-x-4">
-            <span className="text-gray-600">Welcome, <strong>{user?.email}</strong></span>
-            <div className="h-10 w-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
-              {user?.email[0].toUpperCase()}
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-xl border border-gray-100 sm:rounded-2xl sm:px-10">
+          
+          {/* Error Message Display */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center">
+              {error}
             </div>
-          </div>
-        </header>
+          )}
 
-        {/* Dashboard Content */}
-        <main className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Stats Card 1 */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-gray-500 text-sm font-medium uppercase">Total Projects</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">12</p>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email address</label>
+              <div className="mt-1">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="you@example.com"
+                />
+              </div>
             </div>
-            {/* Stats Card 2 */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-gray-500 text-sm font-medium uppercase">Active Tasks</h3>
-              <p className="text-3xl font-bold text-indigo-600 mt-2">5</p>
-            </div>
-            {/* Stats Card 3 */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-gray-500 text-sm font-medium uppercase">Messages</h3>
-              <p className="text-3xl font-bold text-green-600 mt-2">3</p>
-            </div>
-          </div>
 
-          <div className="mt-10 bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-800">Login Successful!</h2>
-            <p className="text-gray-600 mt-2">Your tokens are securely stored in LocalStorage.</p>
-            <div className="mt-6 flex justify-center space-x-2">
-              <span className="px-3 py-1 bg-gray-100 text-xs font-mono rounded border border-gray-200">
-                JWT Token Active
-              </span>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <div className="mt-1">
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input type="checkbox" className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+                <label className="ml-2 block text-sm text-gray-900">Remember me</label>
+              </div>
+              <div className="text-sm">
+                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white transition duration-150 ${
+                isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+              }`}
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-300"></div></div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition">
+                <span>Google</span>
+              </button>
+              <button className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition">
+                <span>GitHub</span>
+              </button>
             </div>
           </div>
-        </main>
+        </div>
+        
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Not a member?{' '}
+          <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Sign up now</a>
+        </p>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Login;

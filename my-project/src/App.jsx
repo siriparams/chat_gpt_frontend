@@ -7,7 +7,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Signup from './pages/Signup'
 import Login from './pages/login'
-
+import Dashboard from './pages/Dashboard'
 function App() {
   return (
     <Router>
@@ -20,6 +20,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       <Footer />
 
