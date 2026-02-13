@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const Dashboard = () => {
   const [userEmail, setUserEmail] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
