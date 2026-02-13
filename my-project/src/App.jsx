@@ -6,7 +6,7 @@ import Contact from './pages/Contact'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Signup from './pages/Signup'
-import Login from './pages/login'
+import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 function App() {
   return (
