@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +14,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/login', {
+      const response = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ const Login = () => {
 
         console.log('Login successful, tokens stored.');
         // Redirect user to dashboard or home
-        window.location.href = '/dashboard'; 
+        window.location.href = '/dashboard';
       } else {
         // Handle backend errors (e.g., 401 Unauthorized)
         setError(data.detail || 'Invalid email or password');
@@ -57,7 +59,7 @@ const Login = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-xl border border-gray-100 sm:rounded-2xl sm:px-10">
-          
+
           {/* Error Message Display */}
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center">
@@ -107,9 +109,8 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white transition duration-150 ${
-                isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
-              }`}
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white transition duration-150 ${isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+                }`}
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -133,7 +134,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-        
+
         <p className="mt-6 text-center text-sm text-gray-600">
           Not a member?{' '}
           <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Sign up now</a>

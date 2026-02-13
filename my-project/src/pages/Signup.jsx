@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const Signup = () => {
   // 1. State management
   const [formData, setFormData] = useState({
@@ -29,7 +31,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/signup', {
+      const response = await fetch(`${API_BASE}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,7 +61,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-        
+
         {/* Header */}
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-gray-900">Sign Up</h2>
@@ -68,9 +70,8 @@ const Signup = () => {
 
         {/* Status Messages */}
         {message.text && (
-          <div className={`p-3 rounded-lg text-sm text-center ${
-            message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
-          }`}>
+          <div className={`p-3 rounded-lg text-sm text-center ${message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
+            }`}>
             {message.text}
           </div>
         )}
@@ -122,9 +123,8 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full flex justify-center py-3 px-4 rounded-lg text-white font-bold transition duration-200 ${
-              loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+            className={`w-full flex justify-center py-3 px-4 rounded-lg text-white font-bold transition duration-200 ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
           >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
